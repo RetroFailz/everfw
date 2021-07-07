@@ -421,6 +421,10 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
+		   -Wno-packed-not-aligned \
+                   -Wno-address-of-packed-member \
+                   -Wno-stringop-truncation \
+		   -Wno-sizeof-pointer-memaccess \
 		   -std=gnu89 $(call cc-option,-fno-PIE)
 
 
