@@ -204,8 +204,8 @@
 
 			route-lvds {
 				status = "okay";
-				logo,uboot = "logo_lowpower.bmp";
-				logo,kernel = "logo.bmp";
+				logo,uboot = "logo.bmp";
+				logo,kernel = "logo_kernel.bmp";
 				logo,mode = "center";
 				charge_logo,mode = "center";
 				connect = <&vop_out_lvds>;
