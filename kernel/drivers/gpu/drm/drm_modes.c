@@ -1148,7 +1148,8 @@ void drm_mode_prune_invalid(struct drm_device *dev,
 					      drm_get_mode_status_name(mode->status));
 			}
 			drm_mode_destroy(dev, mode);
-#if 1
+#if 0
+			
 		}else{
 			if(!strcmp("1280x720", mode->name)){
 				drm_mode_debug_printmodeline(mode);

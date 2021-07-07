@@ -1062,8 +1062,8 @@ static int rk312x_hpmixl_event(struct snd_soc_dapm_widget *w,
 static int rk312x_hpmixr_event(struct snd_soc_dapm_widget *w,
 			       struct snd_kcontrol *kcontrol, int event)
 {
-	/* struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm); */
 #if 0
+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
 	switch (event) {
 	case SND_SOC_DAPM_POST_PMU:
 		snd_soc_update_bits(codec, RK312x_HPMIX_CTL,
@@ -2110,11 +2110,11 @@ static void hpdet_work_func(struct work_struct *work)
 	if (val & 0x80000000) {
 		DBG("%s hp det high\n", __func__);
 		DBG("%s no headset\n", __func__);
-		switch_set_state(&rk312x_priv->sdev, BIT_HEADSET_NO_MIC);
+		switch_set_state(&rk312x_priv->sdev, 0);
 	} else {
 		DBG("%s hp det low\n", __func__);
 		DBG("%s headset inserted\n", __func__);
-		switch_set_state(&rk312x_priv->sdev, 0);
+		switch_set_state(&rk312x_priv->sdev, BIT_HEADSET_NO_MIC);
 	}
 	return;
 }
