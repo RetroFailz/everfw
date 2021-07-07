@@ -31,6 +31,7 @@ struct adc_keys_state {
 	u32 last_key;
 	u32 keyup_voltage;
 	const struct adc_keys_button *map;
+	int scaled;
 };
 
 static void adc_keys_poll(struct input_polled_dev *dev)
@@ -60,8 +61,16 @@ static void adc_keys_poll(struct input_polled_dev *dev)
 	if (st->last_key && st->last_key != keycode)
 		input_report_key(dev->input, st->last_key, 0);
 
-	if (keycode)
+	if (keycode) {
 		input_report_key(dev->input, keycode, 1);
+		if (st->last_key != keycode) {
+			if (keycode == KEY_VOLUMEUP) {
+				st->scaled = min(st->scaled + 10, 100);
+			} else if (keycode == KEY_VOLUMEDOWN) {
+				st->scaled = max(st->scaled - 10, 0);
+			} 
+		}
+	}
 
 	input_sync(dev->input);
 	st->last_key = keycode;
@@ -107,6 +116,25 @@ static int adc_keys_load_keymap(struct device *dev, struct adc_keys_state *st)
 	return 0;
 }
 
+static ssize_t scaled_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	struct adc_keys_state *st = dev_get_drvdata(dev);
+
+	return sprintf(buf, "%d\n", st->scaled);
+	return 0;
+}
+
+static DEVICE_ATTR_RO(scaled);
+
+static struct attribute *adc_keys_attrs[] = {
+	&dev_attr_scaled.attr,
+	NULL,
+};
+
+static struct attribute_group adc_keys_attr_group = {
+	.attrs = adc_keys_attrs,
+};
+
 static int adc_keys_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
@@ -144,6 +172,11 @@ static int adc_keys_probe(struct platform_device *pdev)
 	}
 	st->keyup_voltage /= 1000;
 
+	if (device_property_read_u32(dev, "volume", &st->scaled)) {
+		dev_err(dev, "Invalid or missing volume\n");
+		return -EINVAL;
+	}
+
 	error = adc_keys_load_keymap(dev, st);
 	if (error)
 		return error;
@@ -176,8 +209,16 @@ static int adc_keys_probe(struct platform_device *pdev)
 	for (i = 0; i < st->num_keys; i++)
 		__set_bit(st->map[i].keycode, input->keybit);
 
+	__set_bit(BTN_TRIGGER, input->keybit); // joystick by-id path
+
 	if (device_property_read_bool(dev, "autorepeat"))
 		__set_bit(EV_REP, input->evbit);
+
+	error = sysfs_create_group(&pdev->dev.kobj, &adc_keys_attr_group);
+	if (error) {
+		dev_err(dev, "Unable to export scaled, error: %d\n", error);
+		return error;
+	}
 
 	error = input_register_polled_device(poll_dev);
 	if (error) {
@@ -185,6 +226,12 @@ static int adc_keys_probe(struct platform_device *pdev)
 		return error;
 	}
 
+	return 0;
+}
+
+static int adc_keys_remove(struct platform_device *pdev)
+{
+	sysfs_remove_group(&pdev->dev.kobj, &adc_keys_attr_group);
 	return 0;
 }
 
@@ -202,6 +249,7 @@ static struct platform_driver __refdata adc_keys_driver = {
 		.of_match_table = of_match_ptr(adc_keys_of_match),
 	},
 	.probe = adc_keys_probe,
+	.remove = adc_keys_remove,
 };
 module_platform_driver(adc_keys_driver);
 
