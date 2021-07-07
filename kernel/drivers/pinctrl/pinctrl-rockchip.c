@@ -3729,6 +3729,41 @@ static int rockchip_gpio_direction_output(struct gpio_chip *gc,
 	return pinctrl_gpio_direction_output(gc->base + offset);
 }
 
+static int rockchip_gpio_set_debounce(struct gpio_chip *gc,
+				       unsigned int offset, unsigned int debounce)
+{
+	/*
+ 	* Rockchip's gpio could only support up to one period
+ 	* of the debounce clock(pclk), which is far away from
+ 	* satisftying the requirement, as pclk is usually near
+	* 100MHz shared by all peripherals. So the fact is it
+ 	* has crippled debounce capability could only be useful
+ 	* to prevent any spurious glitches from waking up the system
+ 	* if the gpio is conguired as wakeup interrupt source.
+ 	*/
+	bool enable = true;
+	
+	struct rockchip_pin_bank *bank = gpiochip_get_data(gc);
+	void __iomem *reg = bank->reg_base + GPIO_DEBOUNCE;
+	unsigned long flags;
+	u32 data;
+
+	clk_enable(bank->clk);
+	raw_spin_lock_irqsave(&bank->slock, flags);
+
+	data = readl(reg);
+	if (enable)
+		data |= BIT(offset);
+	else
+		data &= ~BIT(offset);
+	writel(data, reg);
+
+	raw_spin_unlock_irqrestore(&bank->slock, flags);
+	clk_disable(bank->clk);
+	
+	return -ENOTSUPP;
+}
+
 /*
  * gpiolib gpio_to_irq callback function. Creates a mapping between a GPIO pin
  * and a virtual IRQ, if not already present.
@@ -3754,6 +3789,7 @@ static const struct gpio_chip rockchip_gpiolib_chip = {
 	.get_direction	= rockchip_gpio_get_direction,
 	.direction_input = rockchip_gpio_direction_input,
 	.direction_output = rockchip_gpio_direction_output,
+	.set_debounce = rockchip_gpio_set_debounce,
 	.to_irq = rockchip_gpio_to_irq,
 	.owner = THIS_MODULE,
 };

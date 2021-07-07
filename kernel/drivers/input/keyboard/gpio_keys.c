@@ -763,6 +763,8 @@ static int gpio_keys_probe(struct platform_device *pdev)
 			wakeup = 1;
 	}
 
+	__set_bit(BTN_TRIGGER, input->keybit); // joystick by-id path
+
 	error = sysfs_create_group(&pdev->dev.kobj, &gpio_keys_attr_group);
 	if (error) {
 		dev_err(dev, "Unable to export keys/switches, error: %d\n",
