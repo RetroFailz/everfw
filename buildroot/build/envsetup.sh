@@ -34,6 +34,7 @@ DEFCONFIG_ARRAY=(
 "rockchip_px3se" \
 "rockchip_px3se_recovery" \
 "rockchip_rk3128_game" \
+"rockchip_rk3128_evercade" \
 "rockchip_rk2818_game" \
 "rockchip_rk3328" \
 "rockchip_rk3328_recovery" \

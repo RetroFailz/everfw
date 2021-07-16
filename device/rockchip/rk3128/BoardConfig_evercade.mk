@@ -3,8 +3,6 @@
 # Version info
 source device/rockchip/rk3128/Version.mk
 
-#factory image, example:FACTORY="_mickey", FACTORY="_kevin"
-export FACTORY=""
 # Target arch
 export RK_ARCH=arm
 # Uboot defconfig

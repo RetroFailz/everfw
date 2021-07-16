@@ -1,8 +1,8 @@
 PROJECT_DIR := $(shell pwd)
-CC ?= ../../buildroot/output/rockchip_rk3128_game/host/bin/arm-buildroot-linux-gnueabihf-gcc
+CC ?= ../../buildroot/output/rockchip_rk3128_evercade/host/bin/arm-buildroot-linux-gnueabihf-gcc
 BIN = game
 
-STAGING_DIR ?= ../../buildroot/output/rockchip_rk3128_game/staging/
+STAGING_DIR ?= ../../buildroot/output/rockchip_rk3128_evercade/staging/
 
 OBJ = audioplay_dialog.o \
       browser_dialog.o \
