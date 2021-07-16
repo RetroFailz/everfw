@@ -60,9 +60,11 @@ Run `sudo rkdeveloptool wlx boot original-boot.img` to revert to the original ke
 USB mode can be set inside `kernel/arch/arm/boot/dts/rk3128-evercade.dts` file.
 
 To make `adb` work, you need to use OTG mode:
+
     dr_mode = "otg";
 
 If you want to connect USB devices such as controllers to the USB port, then you need Host mode:
+
     dr_mode = "host";
 
 After this change, you need to re-compile the kernel. Note that the Evercade does not support power to the USB device in host mode and it needs to be injected with a proper cable.
