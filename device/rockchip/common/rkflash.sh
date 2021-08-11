@@ -30,7 +30,7 @@ then
 	sudo $UPGRADETOOL di -b $BOOT
 	sudo $UPGRADETOOL di -r $RECOVERY
 	sudo $UPGRADETOOL di -m $MISC
-	sudo $UPGRADETOOL di -oem $OEM
+	#sudo $UPGRADETOOL di -oem $OEM
 	sudo $UPGRADETOOL di -userdata $USERDATA
 	sudo $UPGRADETOOL di -rootfs $ROOTFS
 fi

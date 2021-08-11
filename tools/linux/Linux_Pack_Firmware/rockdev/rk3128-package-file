@@ -12,12 +12,12 @@ uboot		Image/uboot.img
 boot		Image/boot.img
 #recovery	Image/recovery.img
 rootfs		Image/rootfs.img
-oem		Image/oem.img
+#oem		Image/oem.img
 userdata:grow	Image/userdata.img
-# 要写入backup分区的文件就是自身（update.img）
-# SELF 是关键字，表示升级文件（update.img）自身
-# 在生成升级文件时，不加入SELF文件的内容，但在头部信息中有记录
-# 在解包升级文件时，不解包SELF文件的内容。
+# 要写锟斤拷backup锟斤拷锟斤拷锟斤拷锟侥硷拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷update.img锟斤拷
+# SELF 锟角关硷拷锟街ｏ拷锟斤拷示锟斤拷锟斤拷锟侥硷拷锟斤拷update.img锟斤拷锟斤拷锟斤拷
+# 锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟侥硷拷时锟斤拷锟斤拷锟斤拷锟斤拷SELF锟侥硷拷锟斤拷锟斤拷锟捷ｏ拷锟斤拷锟斤拷头锟斤拷锟斤拷息锟斤拷锟叫硷拷录
+# 锟节斤拷锟斤拷锟斤拷锟斤拷募锟绞憋拷锟斤拷锟斤拷锟斤拷SELF锟侥硷拷锟斤拷锟斤拷锟捷★拷
 backup		RESERVED
 #update-script	update-script
 #recover-script	recover-script
